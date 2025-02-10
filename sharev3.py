@@ -169,8 +169,10 @@ class FacebookShare:
                 if 'id' in data:
                     count += 1
                     self.stats.update_success(self.cookie_index)
-                    timestamp = datetime.now().strftime("%H:%M:%S")
-                    print(f"[cyan][{timestamp}][/cyan][green] Share {count}/{self.share_count} completed for Cookie {self.cookie_index + 1}")
+
+                    # Display the count in a concise format
+                    print(f"[cyan][{datetime.now().strftime('%H:%M:%S')}][/cyan][green] {count}/{self.share_count} shares completed for Cookie {self.cookie_index + 1}")
+                    
                 else:
                     print(f"Cookie {self.cookie_index + 1} is blocked or invalid!")
                     self.stats.update_failed(self.cookie_index)
