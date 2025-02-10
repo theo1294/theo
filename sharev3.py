@@ -94,7 +94,11 @@ def banner():
         """[bold cyan]⚡ [bold green]Tool[/]: [bright_magenta]SpamShare[/]
 [bold cyan]⚡ [bold green]Version[/]: [bright_yellow]1.0.0[/]
 [bold cyan]⚡ [bold green]Dev[/]: [italic green]Theo Devcode[/]
-[bold cyan]⚡ [bold green]Status[/]: [bold red]Cookie Mode[/]""",
+[bold cyan]⚡ [bold green]Status[/]: [bold red]Cookie Mode[/]
+
+[bold yellow]Welcome to SpamShare![/]
+[italic green]A powerful tool designed for efficient sharing and management. Keep an eye out for future updates and new features![/]
+[bold blue]Stay connected and enjoy using SpamShare for your needs.[/]""",
         title="[bold white on red] SYSTEM INFORMATION [/]",
         width=65,
         style="bold bright_white",
