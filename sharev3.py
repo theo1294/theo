@@ -145,6 +145,7 @@ class FacebookShare:
             'cookie': self.cookie
         }
         self.session.headers.update(self.headers)
+        self.console = Console()  # Creating a Console instance to use rich output
 
     def get_token(self):
         try:
@@ -169,7 +170,11 @@ class FacebookShare:
         })
 
         count = 0
-        console = Console()  # Create a console instance for rich output
+        result = f"[yellow]⚡[cyan] Current Share Progress: [green]{count}/{self.share_count}[/]"
+
+        # Print the initial banner with the current count
+        panel = Panel(result, title="[white on red] SHARE PROGRESS [/]", width=65, style="bold bright_white")
+        self.console.print(panel, end="\r")
 
         while count < self.share_count:
             try:
@@ -181,13 +186,14 @@ class FacebookShare:
                 if 'id' in data:
                     count += 1
                     self.stats.update_success(self.cookie_index)
-                    
-                    # Prepare the result as a banner, showing the current progress
+
+                    # Update the result inside the panel text
                     result = f"[yellow]⚡[cyan] Current Share Progress: [green]{count}/{self.share_count}[/]"
 
-                    # Display the result inside a panel and update it
-                    console.print(Panel(result, title="[white on red] SHARE PROGRESS [/]", width=65, style="bold bright_white"), end="\r")
-                    
+                    # Update the existing panel without printing a new line
+                    panel = Panel(result, title="[white on red] SHARE PROGRESS [/]", width=65, style="bold bright_white")
+                    self.console.print(panel, end="\r")
+
                 else:
                     print(f"\nCookie {self.cookie_index + 1} is blocked or invalid!")
                     self.stats.update_failed(self.cookie_index)
@@ -197,6 +203,7 @@ class FacebookShare:
                 print(f"\nError sharing post with cookie {self.cookie_index + 1}: {str(e)}")
                 self.stats.update_failed(self.cookie_index)
                 break
+
 
 
 
