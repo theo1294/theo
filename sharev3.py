@@ -90,12 +90,12 @@ def banner():
         style="bold bright_white",
     ))
     
-    print(Panel(
-        """[yellow]⚡[cyan] Tool     : [green]SpamShare[/]
-[yellow]⚡[cyan] Version  : [green]1.0.0[/]
-[yellow]⚡[cyan] Dev      : [green]Theo Devcode[/]
-[yellow]⚡[cyan] Status   : [red]Cookie Mode[/]""",
-        title="[white on red] INFORMATION [/]",
+    console.print(Panel(
+        """[bold cyan]⚡ [bold green]Tool[/]: [bright_magenta]SpamShare[/]
+[bold cyan]⚡ [bold green]Version[/]: [bright_yellow]1.0.0[/]
+[bold cyan]⚡ [bold green]Dev[/]: [italic green]Theo Devcode[/]
+[bold cyan]⚡ [bold green]Status[/]: [bold red]Cookie Mode[/]""",
+        title="[bold white on red] SYSTEM INFORMATION [/]",
         width=65,
         style="bold bright_white",
     ))
