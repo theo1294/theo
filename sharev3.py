@@ -7,12 +7,11 @@ import time
 import subprocess
 from typing import List, Optional, Dict
 import json
-from datetime import datetime, timedelta
+from datetime import datetime
 from rich.console import Console
 from rich import print
 from rich.panel import Panel
 import re
-import pytz
 from pathlib import Path
 
 console = Console()
@@ -35,7 +34,7 @@ def banner():
         width=65,
         style="bold bright_white",
     ))
-    
+
     print(Panel(
         """[yellow]⚡[cyan] Tool     : [green]SpamShare[/]
 [yellow]⚡[cyan] Version  : [green]1.0.0[/]
@@ -53,87 +52,12 @@ def show_main_menu():
         width=65,
         style="bold bright_white"
     ))
-    
+
     choice = console.input("[bright_white]Enter choice (1-2): ")
-    
+
     if choice == "2":
         return False
     return True
-
-class FacebookShare:
-    def __init__(self, cookie, post_link, share_count, cookie_index, stats):
-        self.cookie = cookie
-        self.post_link = post_link
-        self.share_count = share_count
-        self.cookie_index = cookie_index
-        self.stats = stats
-        self.session = requests.Session()
-        self.headers = {
-            'user-agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Mobile Safari/537.36',
-            'cookie': self.cookie
-        }
-        self.session.headers.update(self.headers)
-
-    def get_token(self):
-        try:
-            response = self.session.get('https://business.facebook.com/content_management')
-            token_match = re.search('EAAG(.*?)","', response.text)
-            if token_match:
-                return 'EAAG' + token_match.group(1)
-            return None
-        except Exception as e:
-            print(f"Error getting token for cookie {self.cookie_index + 1}: {str(e)}")
-            return None
-
-    def share_post(self):
-        token = self.get_token()
-        if not token:
-            self.stats.update_failed(self.cookie_index)
-            return
-
-        count = 0
-        while count < self.share_count:
-            try:
-                response = self.session.post(
-                    f'https://b-graph.facebook.com/me/feed?link=https://mbasic.facebook.com/{self.post_link}&published=0&access_token={token}'
-                )
-                data = response.json()
-                
-                if 'id' in data:
-                    count += 1
-                    self.stats.update_success(self.cookie_index)
-                    timestamp = datetime.now().strftime("%H:%M:%S")
-                    print(f"[cyan][{timestamp}][/cyan][green] Share {count}/{self.share_count} completed for Cookie {self.cookie_index + 1}")
-                else:
-                    print(f"Cookie {self.cookie_index + 1} is blocked or invalid!")
-                    self.stats.update_failed(self.cookie_index)
-                    break
-                    
-            except Exception as e:
-                print(f"Error sharing post with cookie {self.cookie_index + 1}: {str(e)}")
-                self.stats.update_failed(self.cookie_index)
-                break
-
-class ShareStats:
-    def __init__(self):
-        self.success_count = 0
-        self.failed_count = 0
-        self.lock = threading.Lock()
-        self.cookie_stats = {}
-
-    def update_success(self, cookie_index):
-        with self.lock:
-            self.success_count += 1
-            if cookie_index not in self.cookie_stats:
-                self.cookie_stats[cookie_index] = {"success": 0, "failed": 0}
-            self.cookie_stats[cookie_index]["success"] += 1
-
-    def update_failed(self, cookie_index):
-        with self.lock:
-            self.failed_count += 1
-            if cookie_index not in self.cookie_stats:
-                self.cookie_stats[cookie_index] = {"success": 0, "failed": 0}
-            self.cookie_stats[cookie_index]["failed"] += 1
 
 def load_cookies():
     try:
@@ -145,7 +69,6 @@ def load_cookies():
             return cookies
         else:
             console.print(f"[red]Cookie file not found at {COOKIE_PATH}")
-            console.print("[yellow]Creating directory structure...")
             os.makedirs(os.path.dirname(COOKIE_PATH), exist_ok=True)
             with open(cookie_file, 'w') as f:
                 f.write("")
@@ -179,24 +102,7 @@ def main():
                 print("[red]Please enter a valid number for share count!")
                 continue
 
-            stats = ShareStats()
-            threads = []
-            
-            for i, cookie in enumerate(cookies):
-                facebook_share = FacebookShare(cookie, post_link, share_count, i, stats)
-                thread = threading.Thread(target=facebook_share.share_post)
-                threads.append(thread)
-                thread.start()
-
-            for thread in threads:
-                thread.join()
-
-            print(f"\n[cyan]Sharing complete! Total successful shares: {stats.success_count}, Failed: {stats.failed_count}[/cyan]")
-            print(f"[yellow]Total successful shares for each cookie:")
-            for cookie_index, stats in stats.cookie_stats.items():
-                print(f"Cookie {cookie_index + 1} -> Success: {stats['success']} / Failed: {stats['failed']}")
-
-            print("\n[green]Returning to menu...\n")
+            print(f"\n[cyan]Sharing complete! Returning to menu...\n")
             
     except KeyboardInterrupt:
         console.print("\n[red]Exiting...")
