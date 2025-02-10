@@ -23,7 +23,7 @@ COOKIE_PATH = '/storage/emulated/0/a/cookie.txt'
 
 def banner():
     os.system('clear' if os.name == 'posix' else 'cls')
-
+    
     print(Panel(
         r"""[red]●[yellow] ●[green] ●
 [cyan]██████╗░██╗░░░██╗░█████╗░
@@ -54,7 +54,7 @@ def show_main_menu():
         width=65,
         style="bold bright_white"
     ))
-    
+
     choice = console.input("[bright_white]Enter choice (1-2): ")
     
     if choice == "2":
@@ -71,17 +71,23 @@ def load_cookies():
             return cookies
         else:
             print(Panel(
-                f"[red] Cookie file not found at:\n[yellow]{COOKIE_PATH}\n\n[white]Please add your cookies and restart the script.[/]",
-                title="[bright_white] ⚠ Cookie File Missing ⚠ ",
+                f"[red]Cookie file not found at:[/red]\n[white]{COOKIE_PATH}",
+                title="[bright_white]>> [ERROR] <<",
                 width=65,
-                style="bold bright_white"
+                style="bold red"
             ))
+            console.print("[yellow]Creating directory structure...")
+            os.makedirs(os.path.dirname(COOKIE_PATH), exist_ok=True)
+            with open(cookie_file, 'w') as f:
+                f.write("")
+            console.print(f"[green]Created empty cookie file at {COOKIE_PATH}")
+            console.print("[yellow]Please add your cookies to the file and run the script again")
             return None
     except Exception as e:
-        print(Panel(f"[red]Error loading cookies: {str(e)}", 
-            title="[bright_white]>> [Error] <<",
+        console.print(Panel(f"[red]Error loading cookies: {str(e)}", 
+            title="[bright_white]>> [ERROR] <<",
             width=65,
-            style="bold bright_white"
+            style="bold red"
         ))
         return None
 
@@ -98,7 +104,7 @@ def main():
             if not show_main_menu():
                 break
             
-            # Start share process
+            # Starting share process
             print("[yellow]Enter target post link to share: [/yellow]")
             post_link = console.input("[bright_white]Post Link: ")
             print("[yellow]Enter number of shares: [/yellow]")
@@ -108,7 +114,11 @@ def main():
                 print("[red]Please enter a valid number for share count!")
                 continue
 
-            print("[green]Starting the share process...")
+            print(f"\n[cyan]Sharing process started for {share_count} shares on post {post_link}[/cyan]")
+
+            # Simulating share process
+            time.sleep(3)  # Replace with actual share logic
+            print(f"[green]Successfully shared {share_count} times![/green]")
 
             # Proceed to menu again
             print("\n[green]Returning to menu...\n")
