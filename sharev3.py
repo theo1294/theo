@@ -172,6 +172,8 @@ class FacebookShare:
         })
 
         count = 0
+        console = Console()
+        
         while count < self.share_count:
             try:
                 response = self.session.post(
@@ -183,7 +185,10 @@ class FacebookShare:
                     count += 1
                     self.stats.update_success(self.cookie_index)
                     
-                    result = f"[yellow]⚡ [cyan]Share Progress : [green]{count}/{self.share_count}[/]"
+                    # Prepare the result for display in a panel
+                    result = f"[yellow]⚡[cyan] Current Share Progress: [green]{count}/{self.share_count}[/]"
+
+                    # Display the result in a panel
                     console.print(Panel(result, title="[white on red] SHARE PROGRESS [/]", width=65, style="bold bright_white"))
                     
                 else:
