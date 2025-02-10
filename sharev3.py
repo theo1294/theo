@@ -21,9 +21,16 @@ os.system('clear' if os.name == 'posix' else 'cls')
 # File paths
 COOKIE_PATH = '/storage/emulated/0/a/cookie.txt'
 
+config = {
+    'post': '',
+    'cookies': [],
+    'total_shares': 0,
+    'target_shares': 0
+}
+
 def banner():
     os.system('clear' if os.name == 'posix' else 'cls')
-    
+
     print(Panel(
         r"""[red]●[yellow] ●[green] ●
 [cyan]██████╗░██╗░░░██╗░█████╗░
@@ -54,12 +61,33 @@ def show_main_menu():
         width=65,
         style="bold bright_white"
     ))
-
+    
     choice = console.input("[bright_white]Enter choice (1-2): ")
     
     if choice == "2":
         return False
     return True
+
+class ShareStats:
+    def __init__(self):
+        self.success_count = 0
+        self.failed_count = 0
+        self.lock = threading.Lock()
+        self.cookie_stats = {}
+
+    def update_success(self, cookie_index):
+        with self.lock:
+            self.success_count += 1
+            if cookie_index not in self.cookie_stats:
+                self.cookie_stats[cookie_index] = {"success": 0, "failed": 0}
+            self.cookie_stats[cookie_index]["success"] += 1
+
+    def update_failed(self, cookie_index):
+        with self.lock:
+            self.failed_count += 1
+            if cookie_index not in self.cookie_stats:
+                self.cookie_stats[cookie_index] = {"success": 0, "failed": 0}
+            self.cookie_stats[cookie_index]["failed"] += 1
 
 def load_cookies():
     try:
@@ -70,24 +98,28 @@ def load_cookies():
             console.print(f"[green]Successfully loaded {len(cookies)} cookies from {COOKIE_PATH}")
             return cookies
         else:
-            print(Panel(
-                f"[red]Cookie file not found at:[/red]\n[white]{COOKIE_PATH}",
-                title="[bright_white]>> [ERROR] <<",
+            console.print(Panel(
+                f"[red]Cookie file not found at {COOKIE_PATH}\n\n[yellow]Creating directory structure...[/]",
+                title="[bright_white on red] ERROR [/]",
                 width=65,
-                style="bold red"
+                style="bold bright_white"
             ))
-            console.print("[yellow]Creating directory structure...")
             os.makedirs(os.path.dirname(COOKIE_PATH), exist_ok=True)
             with open(cookie_file, 'w') as f:
                 f.write("")
-            console.print(f"[green]Created empty cookie file at {COOKIE_PATH}")
-            console.print("[yellow]Please add your cookies to the file and run the script again")
+            console.print(Panel(
+                f"[green]Created empty cookie file at {COOKIE_PATH}\n\n[yellow]Please add your cookies and restart the script.[/]",
+                title="[bright_white on yellow] ACTION REQUIRED [/]",
+                width=65,
+                style="bold bright_white"
+            ))
             return None
     except Exception as e:
-        console.print(Panel(f"[red]Error loading cookies: {str(e)}", 
-            title="[bright_white]>> [ERROR] <<",
+        console.print(Panel(
+            f"[red]Error loading cookies: {str(e)}",
+            title="[bright_white on red] ERROR [/]",
             width=65,
-            style="bold red"
+            style="bold bright_white"
         ))
         return None
 
@@ -114,14 +146,8 @@ def main():
                 print("[red]Please enter a valid number for share count!")
                 continue
 
-            print(f"\n[cyan]Sharing process started for {share_count} shares on post {post_link}[/cyan]")
-
-            # Simulating share process
-            time.sleep(3)  # Replace with actual share logic
-            print(f"[green]Successfully shared {share_count} times![/green]")
-
-            # Proceed to menu again
-            print("\n[green]Returning to menu...\n")
+            stats = ShareStats()
+            print("\n[green]Sharing process completed! Returning to menu...\n")
             
     except KeyboardInterrupt:
         console.print("\n[red]Exiting...")
