@@ -183,7 +183,6 @@ class FacebookShare:
                     count += 1
                     self.stats.update_success(self.cookie_index)
                     
-                    # Print the share progress in a styled banner
                     result = f"[yellow]⚡ [cyan]Share Progress : [green]{count}/{self.share_count}[/]"
                     console.print(Panel(result, title="[white on red] SHARE PROGRESS [/]", width=65, style="bold bright_white"))
                     
@@ -196,11 +195,6 @@ class FacebookShare:
                 print(f"\nError sharing post with cookie {self.cookie_index + 1}: {str(e)}")
                 self.stats.update_failed(self.cookie_index)
                 break
-
-
-
-
-
 
 
 class ShareStats:
