@@ -114,6 +114,17 @@ def show_main_menu():
         return False
     return True
 
+class Stats:
+    def __init__(self, total_cookies):
+        self.success = [0] * total_cookies
+        self.failed = [0] * total_cookies
+
+    def update_success(self, index):
+        self.success[index] += 1
+
+    def update_failed(self, index):
+        self.failed[index] += 1
+
 class FacebookShare:
     def __init__(self, cookie, post_link, share_count, cookie_index, stats):
         self.cookie = cookie
@@ -170,8 +181,8 @@ class FacebookShare:
                     count += 1
                     self.stats.update_success(self.cookie_index)
                     timestamp = datetime.now().strftime("%H:%M:%S")
-                    # Print progress in the format "count/target"
-                    print(f"\r[{timestamp}] {count}/{self.share_count} completed for Cookie {self.cookie_index + 1}", end="")
+                    # Display and update the progress with new number in place
+                    print(f"\r{count}/{self.share_count}", end="")
                 else:
                     print(f"Cookie {self.cookie_index + 1} is blocked or invalid!")
                     self.stats.update_failed(self.cookie_index)
@@ -181,6 +192,7 @@ class FacebookShare:
                 print(f"Error sharing post with cookie {self.cookie_index + 1}: {str(e)}")
                 self.stats.update_failed(self.cookie_index)
                 break
+
 
 
 
