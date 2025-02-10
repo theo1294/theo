@@ -114,6 +114,8 @@ def show_main_menu():
         return False
     return True
 
+console = Console()
+
 class Stats:
     def __init__(self, total_cookies):
         self.success = [0] * total_cookies
@@ -181,8 +183,9 @@ class FacebookShare:
                     count += 1
                     self.stats.update_success(self.cookie_index)
                     
-                    # Print the count as a single line and update it in place
-                    print(f"{count}/{self.share_count}", end="\r")
+                    # Print the share progress in a styled banner
+                    result = f"[yellow]⚡ [cyan]Share Progress : [green]{count}/{self.share_count}[/]"
+                    console.print(Panel(result, title="[white on red] SHARE PROGRESS [/]", width=65, style="bold bright_white"))
                     
                 else:
                     print(f"\nCookie {self.cookie_index + 1} is blocked or invalid!")
@@ -193,6 +196,7 @@ class FacebookShare:
                 print(f"\nError sharing post with cookie {self.cookie_index + 1}: {str(e)}")
                 self.stats.update_failed(self.cookie_index)
                 break
+
 
 
 
