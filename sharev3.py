@@ -194,21 +194,6 @@ class FacebookShare:
                 self.stats.update_failed(self.cookie_index)
                 break
 
-
-                else:
-                    print(f"\nCookie {self.cookie_index + 1} is blocked or invalid!")
-                    self.stats.update_failed(self.cookie_index)
-                    break
-                    
-            except Exception as e:
-                print(f"\nError sharing post with cookie {self.cookie_index + 1}: {str(e)}")
-                self.stats.update_failed(self.cookie_index)
-                break
-
-
-
-
-
 class ShareStats:
     def __init__(self):
         self.success_count = 0
