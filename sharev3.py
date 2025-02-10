@@ -81,10 +81,10 @@ def banner():
 
     print(Panel(
         r"""[red]●[yellow] ●[green] ●
-[cyan]            ▀▀█▀▀ ░█─░█ ░█▀▀▀ ░█▀▀▀█ 
-[cyan]            ─░█── ░█▀▀█ ░█▀▀▀ ░█──░█ 
-[cyan]            ─░█── ░█─░█ ░█▄▄▄ ░█▄▄▄█""",
-        title="[bright_white] SPAMSHARE [green]●[yellow] Active [/]",
+[cyan]           ▀▀█▀▀ ░█─░█ ░█▀▀▀ ░█▀▀▀█ 
+[cyan]           ─░█── ░█▀▀█ ░█▀▀▀ ░█──░█ 
+[cyan]           ─░█── ░█─░█ ░█▄▄▄ ░█▄▄▄█""",
+        title="[green]●[yellow] Active [/]",
         width=65,
         style="bold bright_white",
     ))
