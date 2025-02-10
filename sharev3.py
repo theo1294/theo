@@ -76,54 +76,14 @@ def update_tool():
         ))
         time.sleep(2)
 
-def get_system_info() -> Dict[str, str]:
-    try:
-        apis = [
-            'https://ipapi.co/json/',
-            'https://api.ipify.org?format=json',
-            'https://api.myip.com'
-        ]
-        
-        for api in apis:
-            try:
-                response = requests.get(api, timeout=3)
-                if response.status_code == 200:
-                    ip_info = response.json()
-                    break
-            except:
-                continue
-                
-        if 'ip' not in ip_info:
-            backup_response = requests.get('https://api64.ipify.org?format=json', timeout=3)
-            ip_info = backup_response.json()
-            
-            location_response = requests.get(f'https://ipapi.co/{ip_info["ip"]}/json/', timeout=3)
-            location_info = location_response.json()
-            ip_info.update(location_info)
-        
-        ph_tz = pytz.timezone('Asia/Manila')
-        ph_time = datetime.now(ph_tz)
-        
-        return {
-            'ip': ip_info.get('ip', 'Checking...'),
-            'region': ip_info.get('region', 'Checking...'),
-            'city': ip_info.get('city', 'Checking...'),
-            'time': ph_time.strftime("%I:%M:%S %p"),
-            'date': ph_time.strftime("%B %d, %Y")
-        }
-    except:
-        return {
-            'ip': 'Checking...',
-            'region': 'Checking...',
-            'city': 'Checking...',
-            'time': datetime.now().strftime("%I:%M:%S %p"),
-            'date': datetime.now().strftime("%B %d, %Y")
-        }
+# Remove the system info function
+# def get_system_info() -> Dict[str, str]:
+#     # Removed system information fetching code
 
 def banner():
     os.system('clear' if os.name == 'posix' else 'cls')
-    sys_info = get_system_info()
     
+    # Remove system information
     print(Panel(
         r"""[red]●[yellow] ●[green] ●
 [cyan]██████╗░██╗░░░██╗░█████╗░
@@ -143,17 +103,6 @@ def banner():
 [yellow]⚡[cyan] Dev      : [green]Ryo Evisu[/]
 [yellow]⚡[cyan] Status   : [red]Cookie Mode[/]""",
         title="[white on red] INFORMATION [/]",
-        width=65,
-        style="bold bright_white",
-    ))
-    
-    print(Panel(
-        f"""[yellow]⚡[cyan] IP       : [cyan]{sys_info['ip']}[/]
-[yellow]⚡[cyan] Region   : [cyan]{sys_info['region']}[/]
-[yellow]⚡[cyan] City     : [cyan]{sys_info['city']}[/]
-[yellow]⚡[cyan] Time     : [cyan]{sys_info['time']}[/]
-[yellow]⚡[cyan] Date     : [cyan]{sys_info['date']}[/]""",
-        title="[white on red] SYSTEM INFO [/]",
         width=65,
         style="bold bright_white",
     ))
@@ -276,151 +225,40 @@ def load_cookies():
             console.print(f"[red]Cookie file not found at {COOKIE_PATH}")
             console.print("[yellow]Creating directory structure...")
             os.makedirs(os.path.dirname(COOKIE_PATH), exist_ok=True)
-            with open(cookie_file, 'w') as f:
-                f.write("")
-            console.print(f"[green]Created empty cookie file at {COOKIE_PATH}")
-            console.print("[yellow]Please add your cookies to the file and run the script again")
-            return None
+            return []
     except Exception as e:
-        console.print(f"[red]Error loading cookies: {str(e)}")
-        return None
+        console.print(f"[red]Error loading cookies: {e}")
+        return []
 
-def main():
-    try:
-        banner()
-        
-        config['cookies'] = load_cookies()
-        if not config['cookies']:
-            return
+def start_sharing(cookies: List[str], post_link: str, share_count: int):
+    share_stats = ShareStats()
+    threads = []
 
-        print(Panel("[white]Loading cookies...", 
-            title="[bright_white]>> [Process] <<",
-            width=65,
-            style="bold bright_white"
-        ))
-        loading_animation(2, "Processing cookies...")
-        print(Panel(f"""[green]Cookies loaded successfully!
-[yellow]⚡[white] Total cookies: [cyan]{len(config['cookies'])}""",
-            title="[bright_white]>> [Success] <<",
-            width=65,
-            style="bold bright_white"
-        ))
-        time.sleep(1)
-        banner()
+    for i, cookie in enumerate(cookies):
+        share = FacebookShare(cookie, post_link, share_count, i, share_stats)
+        thread = threading.Thread(target=share.share_post)
+        threads.append(thread)
+        thread.start()
 
-        print(Panel("[white]Enter Post Link", 
-            title="[bright_white]>> [Post Configuration] <<",
-            width=65,
-            style="bold bright_white",
-            subtitle="╭─────",
-            subtitle_align="left"
-        ))
-        config['post'] = console.input("[bright_white]   ╰─> ")
-        banner()
+    for thread in threads:
+        thread.join()
 
-        print(Panel("[white]Enter shares per cookie (1-1000)", 
-            title="[bright_white]>> [Share Configuration] <<",
-            width=65,
-            style="bold bright_white",
-            subtitle="╭─────",
-            subtitle_align="left"
-        ))
-        share_count = int(console.input("[bright_white]   ╰─> "))
-        banner()
-
-        print(Panel(f"""[yellow]⚡[white] Post Link: [cyan]{config['post']}
-[yellow]⚡[white] Cookies: [cyan]{len(config['cookies'])}
-[yellow]⚡[white] Shares per cookie: [cyan]{share_count}
-[yellow]⚡[white] Total target shares: [cyan]{share_count * len(config['cookies'])}
-
-[white]Press Enter to start...""",
-            title="[bright_white]>> [Configuration Summary] <<",
-            width=65,
-            style="bold bright_white",
-            subtitle="╭─────",
-            subtitle_align="left"
-        ))
-        console.input("[bright_white]   ╰─> ")
-        banner()
-
-        print(Panel("[green]Starting share process...", 
-            title="[bright_white]>> [Process Started] <<",
-            width=65,
-            style="bold bright_white"
-        ))
-        
-        stats = ShareStats()
-        threads = []
-        
-        for i, cookie in enumerate(config['cookies']):
-            share_thread = threading.Thread(
-                target=FacebookShare(
-                    cookie=cookie,
-                    post_link=config['post'],
-                    share_count=share_count,
-                    cookie_index=i,
-                    stats=stats
-                ).share_post
-            )
-            threads.append(share_thread)
-            share_thread.start()
-
-        for thread in threads:
-            thread.join()
-
-        print(Panel(f"""[green]Process completed!
-[yellow]⚡[white] Total shares attempted: [cyan]{stats.success_count + stats.failed_count}
-[yellow]⚡[white] Successful: [green]{stats.success_count}
-[yellow]⚡[white] Failed: [red]{stats.failed_count}
-
-[white]Detailed Statistics:
-{chr(10).join(f'[yellow]⚡[white] Cookie {idx + 1}: [green]{stat["success"]} success[white], [red]{stat["failed"]} failed' for idx, stat in stats.cookie_stats.items())}""",
-            title="[bright_white]>> [Completed] <<",
-            width=65,
-            style="bold bright_white"
-        ))
-
-    except KeyboardInterrupt:
-        print(Panel("[yellow]Process interrupted by user", 
-            title="[bright_white]>> [Interrupted] <<",
-            width=65,
-            style="bold bright_white"
-        ))
-    except Exception as e:
-        print(Panel(f"[red]Error: {str(e)}", 
-            title="[bright_white]>> [Error] <<",
-            width=65,
-            style="bold bright_white"
-        ))
-
-def restart_script():
-    print(Panel("[white]Press Enter to restart or type 'exit' to quit", 
-        title="[bright_white]>> [Restart] <<",
-        width=65,
-        style="bold bright_white",
-        subtitle="╭─────",
-        subtitle_align="left"
-    ))
-    choice = console.input("[bright_white]   ╰─> ")
-    return choice.lower() != 'exit'
+    console.print(f"[green]Sharing process completed! {share_stats.success_count} successful shares, {share_stats.failed_count} failed.")
 
 if __name__ == "__main__":
+    banner()
+
+    cookies = load_cookies()
+
+    if not cookies:
+        print(Panel("[red]No cookies found, exiting...", title="[bright_white]>> [Error] <<", width=65, style="bold bright_white"))
+        sys.exit(0)
+
     while True:
-        banner()
         if not show_main_menu():
-            print(Panel("[yellow]Thanks for using SpamShare!", 
-                title="[bright_white]>> [Goodbye] <<",
-                width=65,
-                style="bold bright_white"
-            ))
             break
-            
-        main()
-        if not restart_script():
-            print(Panel("[yellow]Thanks for using SpamShare!", 
-                title="[bright_white]>> [Goodbye] <<",
-                width=65,
-                style="bold bright_white"
-            ))
-            break
-        os.system('clear' if os.name == 'posix' else 'cls')
+
+    post_link = input("[cyan]Enter the post link to share: ")
+    share_count = int(input("[cyan]Enter number of shares per cookie: "))
+
+    start_sharing(cookies, post_link, share_count)
