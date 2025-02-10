@@ -181,10 +181,9 @@ class FacebookShare:
                     count += 1
                     self.stats.update_success(self.cookie_index)
                     
-                    print(f"══════════════════════════════════════════════════════════════════════════\n"
-      f"✨ Share {count}/{self.share_count} Complete! 🚀\n"
-      f"══════════════════════════════════════════════════════════════════════════", end="\r")
-
+                    result = f"[yellow]⚡ [cyan]Share Progress : [green]{count}/{self.share_count}[/]"
+                    console.print(Panel(result, title="[white on red] SHARE PROGRESS [/]", width=65, style="bold bright_white"))
+                    
                 else:
                     print(f"\nCookie {self.cookie_index + 1} is blocked or invalid!")
                     self.stats.update_failed(self.cookie_index)
