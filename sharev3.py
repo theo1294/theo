@@ -76,14 +76,9 @@ def update_tool():
         ))
         time.sleep(2)
 
-# Remove the system info function
-# def get_system_info() -> Dict[str, str]:
-#     # Removed system information fetching code
-
 def banner():
     os.system('clear' if os.name == 'posix' else 'cls')
-    
-    # Remove system information
+
     print(Panel(
         r"""[red]●[yellow] ●[green] ●
 [cyan]██████╗░██╗░░░██╗░█████╗░
@@ -225,40 +220,61 @@ def load_cookies():
             console.print(f"[red]Cookie file not found at {COOKIE_PATH}")
             console.print("[yellow]Creating directory structure...")
             os.makedirs(os.path.dirname(COOKIE_PATH), exist_ok=True)
-            return []
+            with open(cookie_file, 'w') as f:
+                f.write("")
+            console.print(f"[green]Created empty cookie file at {COOKIE_PATH}")
+            console.print("[yellow]Please add your cookies to the file and run the script again")
+            return None
     except Exception as e:
-        console.print(f"[red]Error loading cookies: {e}")
-        return []
+        console.print(f"[red]Error loading cookies: {str(e)}")
+        return None
 
-def start_sharing(cookies: List[str], post_link: str, share_count: int):
-    share_stats = ShareStats()
-    threads = []
+def main():
+    try:
+        banner()
+        
+        # Load cookies
+        cookies = load_cookies()
+        if not cookies:
+            return
+        
+        while True:
+            if not show_main_menu():
+                break
+            
+            # Starting share process
+            print("[yellow]Enter target post link to share: [/yellow]")
+            post_link = console.input("[bright_white]Post Link: ")
+            print("[yellow]Enter number of shares: [/yellow]")
+            try:
+                share_count = int(console.input("[bright_white]Number of Shares: "))
+            except ValueError:
+                print("[red]Please enter a valid number for share count!")
+                continue
 
-    for i, cookie in enumerate(cookies):
-        share = FacebookShare(cookie, post_link, share_count, i, share_stats)
-        thread = threading.Thread(target=share.share_post)
-        threads.append(thread)
-        thread.start()
+            stats = ShareStats()
+            threads = []
+            
+            for i, cookie in enumerate(cookies):
+                facebook_share = FacebookShare(cookie, post_link, share_count, i, stats)
+                thread = threading.Thread(target=facebook_share.share_post)
+                threads.append(thread)
+                thread.start()
 
-    for thread in threads:
-        thread.join()
+            for thread in threads:
+                thread.join()
 
-    console.print(f"[green]Sharing process completed! {share_stats.success_count} successful shares, {share_stats.failed_count} failed.")
+            print(f"\n[cyan]Sharing complete! Total successful shares: {stats.success_count}, Failed: {stats.failed_count}[/cyan]")
+            print(f"[yellow]Total successful shares for each cookie:")
+            for cookie_index, stats in stats.cookie_stats.items():
+                print(f"Cookie {cookie_index + 1} -> Success: {stats['success']} / Failed: {stats['failed']}")
 
-if __name__ == "__main__":
-    banner()
-
-    cookies = load_cookies()
-
-    if not cookies:
-        print(Panel("[red]No cookies found, exiting...", title="[bright_white]>> [Error] <<", width=65, style="bold bright_white"))
+            # Proceed to menu again
+            print("\n[green]Returning to menu...\n")
+            
+    except KeyboardInterrupt:
+        console.print("\n[red]Exiting...")
         sys.exit(0)
 
-    while True:
-        if not show_main_menu():
-            break
-
-    post_link = input("[cyan]Enter the post link to share: ")
-    share_count = int(input("[cyan]Enter number of shares per cookie: "))
-
-    start_sharing(cookies, post_link, share_count)
+if __name__ == '__main__':
+    main()
