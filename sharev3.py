@@ -183,7 +183,7 @@ class FacebookShare:
                     count += 1
                     self.stats.update_success(self.cookie_index)
                     
-                    # Prepare the result as a banner
+                    # Prepare the result as a banner, showing the current progress
                     result = f"[yellow]⚡[cyan] Current Share Progress: [green]{count}/{self.share_count}[/]"
 
                     # Display the result inside a panel and update it
