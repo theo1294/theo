@@ -114,8 +114,6 @@ def show_main_menu():
         return False
     return True
 
-console = Console()
-
 class Stats:
     def __init__(self, total_cookies):
         self.success = [0] * total_cookies
