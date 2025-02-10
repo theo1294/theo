@@ -124,7 +124,6 @@ class Stats:
 
     def update_failed(self, index):
         self.failed[index] += 1
-
 class FacebookShare:
     def __init__(self, cookie, post_link, share_count, cookie_index, stats):
         self.cookie = cookie
@@ -178,7 +177,7 @@ class FacebookShare:
                     f'https://b-graph.facebook.com/me/feed?link=https://mbasic.facebook.com/{self.post_link}&published=0&access_token={token}'
                 )
                 data = response.json()
-                
+
                 if 'id' in data:
                     count += 1
                     self.stats.update_success(self.cookie_index)
@@ -198,6 +197,7 @@ class FacebookShare:
                 print(f"\nError sharing post with cookie {self.cookie_index + 1}: {str(e)}")
                 self.stats.update_failed(self.cookie_index)
                 break
+
 
 
 
