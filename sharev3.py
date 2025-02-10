@@ -170,8 +170,8 @@ class FacebookShare:
         })
 
         count = 0
-        console = Console()
-        
+        console = Console()  # Create a console instance for rich output
+
         while count < self.share_count:
             try:
                 response = self.session.post(
@@ -183,11 +183,11 @@ class FacebookShare:
                     count += 1
                     self.stats.update_success(self.cookie_index)
                     
-                    # Prepare the result for display in a panel
+                    # Prepare the result as a banner
                     result = f"[yellow]⚡[cyan] Current Share Progress: [green]{count}/{self.share_count}[/]"
 
-                    # Display the result in a panel
-                    console.print(Panel(result, title="[white on red] SHARE PROGRESS [/]", width=65, style="bold bright_white"))
+                    # Display the result inside a panel and update it
+                    console.print(Panel(result, title="[white on red] SHARE PROGRESS [/]", width=65, style="bold bright_white"), end="\r")
                     
                 else:
                     print(f"\nCookie {self.cookie_index + 1} is blocked or invalid!")
@@ -198,6 +198,7 @@ class FacebookShare:
                 print(f"\nError sharing post with cookie {self.cookie_index + 1}: {str(e)}")
                 self.stats.update_failed(self.cookie_index)
                 break
+
 
 
 class ShareStats:
