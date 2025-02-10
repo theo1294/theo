@@ -182,11 +182,11 @@ class FacebookShare:
                     self.stats.update_success(self.cookie_index)
                     
                     # Print the count as a single line and update it in place
-                    print(f"╭────────────── >> [Main Menu] << ───────────────╮
+                    print(f"""╭────────────── >> [Main Menu] << ───────────────╮
 │ {count}/{self.share_count}
-                                            │
-╰────────────────────────────────────────────────╯
-", end="\r")
+│
+╰────────────────────────────────────────────────╯""", end="\r")
+
                     
                 else:
                     print(f"\nCookie {self.cookie_index + 1} is blocked or invalid!")
