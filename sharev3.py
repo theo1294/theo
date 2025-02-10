@@ -78,24 +78,11 @@ def update_tool():
 
 def banner():
     os.system('clear' if os.name == 'posix' else 'cls')
-
-    print(Panel(
-        r"""[red]●[yellow] ●[green] ●
-[cyan]██████╗░██╗░░░██╗░█████╗░
-[cyan]██╔══██╗╚██╗░██╔╝██╔══██╗
-[cyan]██████╔╝░╚████╔╝░██║░░██║
-[cyan]██╔══██╗░░╚██╔╝░░██║░░██║
-[cyan]██║░░██║░░░██║░░░╚█████╔╝
-[cyan]╚═╝░░╚═╝░░░╚═╝░░░░╚════╝░""",
-        title="[bright_white] SPAMSHARE [green]●[yellow] Active [/]",
-        width=65,
-        style="bold bright_white",
-    ))
     
     print(Panel(
         """[yellow]⚡[cyan] Tool     : [green]SpamShare[/]
 [yellow]⚡[cyan] Version  : [green]1.0.0[/]
-[yellow]⚡[cyan] Dev      : [green]Ryo Evisu[/]
+[yellow]⚡[cyan] Dev      : [green]Theo Devcode[/]
 [yellow]⚡[cyan] Status   : [red]Cookie Mode[/]""",
         title="[white on red] INFORMATION [/]",
         width=65,
