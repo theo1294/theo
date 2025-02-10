@@ -85,7 +85,6 @@ def banner():
 [cyan]           ─░█── ░█▀▀█ ░█▀▀▀ ░█──░█ 
 [cyan]           ─░█── ░█─░█ ░█▄▄▄ ░█▄▄▄█
 """,
-        title="[green]●[yellow] Active [/]",
         width=65,
         style="bold bright_white",
     ))
@@ -95,6 +94,7 @@ def banner():
 [bold cyan]⚡ [bold green]Version[/]: [bright_yellow]1.0.0[/]
 [bold cyan]⚡ [bold green]Dev[/]: [italic green]Theo Devcode[/]
 [bold cyan]⚡ [bold green]Status[/]: [bold red]Cookie Mode[/]
+[bold cyan]⚡ [bold green]Premium[/]: [bold yellow]ACTIVE[/]
 
 [bold yellow]Welcome to SpamShare![/]
 [italic green]A powerful tool designed for efficient sharing and management. Keep an eye out for future updates and new features![/]
