@@ -199,11 +199,10 @@ class FacebookShare:
                     count += 1
                     self.stats.update_success(self.cookie_index)
 
-                    # Update the result inside the panel text
-                    result = f"[yellow]⚡[cyan] Current Share Progress: [green]{count}/{self.share_count}[/]"
-
+print(f"{count}/{self.share_count}", end="\r")
+                    
                     # Update the existing panel without printing a new line
-                    panel = Panel(result, title="[white on red] SHARE PROGRESS [/]", width=65, style="bold bright_white")
+                    panel = Panel(print, title="[white on red] SHARE PROGRESS [/]", width=65, style="bold bright_white")
                     self.console.print(panel, end="\r")
 
                 else:
