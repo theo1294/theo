@@ -80,10 +80,11 @@ def banner():
     os.system('clear' if os.name == 'posix' else 'cls')
 
     print(Panel(
-        r"""[red]●[yellow] ●[green] ●
+        r"""
 [cyan]           ▀▀█▀▀ ░█─░█ ░█▀▀▀ ░█▀▀▀█ 
 [cyan]           ─░█── ░█▀▀█ ░█▀▀▀ ░█──░█ 
-[cyan]           ─░█── ░█─░█ ░█▄▄▄ ░█▄▄▄█""",
+[cyan]           ─░█── ░█─░█ ░█▄▄▄ ░█▄▄▄█
+""",
         title="[green]●[yellow] Active [/]",
         width=65,
         style="bold bright_white",
