@@ -124,6 +124,7 @@ class Stats:
 
     def update_failed(self, index):
         self.failed[index] += 1
+
 class FacebookShare:
     def __init__(self, cookie, post_link, share_count, cookie_index, stats):
         self.cookie = cookie
@@ -145,7 +146,6 @@ class FacebookShare:
             'cookie': self.cookie
         }
         self.session.headers.update(self.headers)
-        self.console = Console()  # Creating a Console instance to use rich output
 
     def get_token(self):
         try:
@@ -170,18 +170,30 @@ class FacebookShare:
         })
 
         count = 0
-        result = f"[yellow]⚡[cyan] Current Share Progress: [green]{count}/{self.share_count}[/]"
-
-        # Print the initial banner with the current count
-        panel = Panel(result, title="[white on red] SHARE PROGRESS [/]", width=65, style="bold bright_white")
-        self.console.print(panel, end="\r")
-
         while count < self.share_count:
             try:
                 response = self.session.post(
                     f'https://b-graph.facebook.com/me/feed?link=https://mbasic.facebook.com/{self.post_link}&published=0&access_token={token}'
                 )
                 data = response.json()
+                
+                if 'id' in data:
+                    count += 1
+                    self.stats.update_success(self.cookie_index)
+                    
+                    # Print the count as a single line and update it in place
+                    print(f"{count}/{self.share_count}", end="\r")
+                    
+                else:
+                    print(f"\nCookie {self.cookie_index + 1} is blocked or invalid!")
+                    self.stats.update_failed(self.cookie_index)
+                    break
+                    
+            except Exception as e:
+                print(f"\nError sharing post with cookie {self.cookie_index + 1}: {str(e)}")
+                self.stats.update_failed(self.cookie_index)
+                break
+
 
                 if 'id' in data:
                     count += 1
