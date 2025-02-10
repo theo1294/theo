@@ -180,18 +180,20 @@ class FacebookShare:
                 if 'id' in data:
                     count += 1
                     self.stats.update_success(self.cookie_index)
-                    timestamp = datetime.now().strftime("%H:%M:%S")
-                    # Display and update the progress with new number in place
-                    print(f"\r{count}/{self.share_count}", end="")
+                    
+                    # Print the count as a single line and update it in place
+                    print(f"{count}/{self.share_count}", end="\r")
+                    
                 else:
-                    print(f"Cookie {self.cookie_index + 1} is blocked or invalid!")
+                    print(f"\nCookie {self.cookie_index + 1} is blocked or invalid!")
                     self.stats.update_failed(self.cookie_index)
                     break
                     
             except Exception as e:
-                print(f"Error sharing post with cookie {self.cookie_index + 1}: {str(e)}")
+                print(f"\nError sharing post with cookie {self.cookie_index + 1}: {str(e)}")
                 self.stats.update_failed(self.cookie_index)
                 break
+
 
 
 
