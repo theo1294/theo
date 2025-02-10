@@ -195,16 +195,6 @@ class FacebookShare:
                 break
 
 
-                if 'id' in data:
-                    count += 1
-                    self.stats.update_success(self.cookie_index)
-
-print(f"{count}/{self.share_count}", end="\r")
-                    
-                    # Update the existing panel without printing a new line
-                    panel = Panel(print, title="[white on red] SHARE PROGRESS [/]", width=65, style="bold bright_white")
-                    self.console.print(panel, end="\r")
-
                 else:
                     print(f"\nCookie {self.cookie_index + 1} is blocked or invalid!")
                     self.stats.update_failed(self.cookie_index)
