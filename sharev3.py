@@ -104,22 +104,28 @@ def banner():
     ))
 
 def show_main_menu():
+    menu_content = """
+[bold cyan][1] [green]Start Share Process[/]
+[bold cyan][2] [red]Exit[/]
+"""
     console.print(Panel(
-        """[bold cyan][1] [green]Start Share Process[/]
-[bold cyan][2] [red]Exit[/]""",
+        menu_content,
         title="[bright_white on blue]>> [Main Menu] <<",
         width=65,
         style="bold bright_white"
     ))
     
-    choice = Prompt.ask("[bright_white]Enter choice (1-2): ", choices=["1", "2"], default="1")
+    choice = console.input("[bright_white]Enter choice (1-2): ")
     
     if choice == "2":
-        console.print(Panel("[bold red]Exiting the application...[/]", style="bold bright_white", width=65))
+        console.print(Panel("[bold red]Exiting the program...[/]", title="[bright_white]Exit[/]", width=65, style="bold red"))
         return False
-    else:
-        console.print(Panel("[bold green]Starting Share Process...[/]", style="bold bright_white", width=65))
+    elif choice == "1":
+        console.print(Panel("[bold green]Starting Share Process...[/]", title="[bright_white]Process[/]", width=65, style="bold green"))
         return True
+    else:
+        console.print(Panel("[bold yellow]Invalid choice, please select (1-2)[/]", title="[bright_white]Invalid Input[/]", width=65, style="bold yellow"))
+        return show_main_menu()  # Recurse if invalid choice
 
 class Stats:
     def __init__(self, total_cookies):
