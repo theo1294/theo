@@ -224,20 +224,41 @@ def load_cookies():
         if cookie_file.exists():
             with open(cookie_file, 'r') as f:
                 cookies = [line.strip() for line in f if line.strip()]
-            console.print(f"[green]Successfully loaded {len(cookies)} cookies from {COOKIE_PATH}")
+            console.print(Panel(
+                f"[green]Successfully loaded {len(cookies)} cookies from [bold cyan]{COOKIE_PATH}[/]",
+                title="[bold white on green] COOKIE LOAD SUCCESS [/]",
+                width=65,
+                style="bold bright_white"
+            ))
             return cookies
         else:
-            console.print(f"[red]Cookie file not found at {COOKIE_PATH}")
+            console.print(Panel(
+                f"[red]Cookie file not found at [bold yellow]{COOKIE_PATH}[/]",
+                title="[bold white on red] ERROR [/]",
+                width=65,
+                style="bold bright_white"
+            ))
             console.print("[yellow]Creating directory structure...")
             os.makedirs(os.path.dirname(COOKIE_PATH), exist_ok=True)
             with open(cookie_file, 'w') as f:
                 f.write("")
-            console.print(f"[green]Created empty cookie file at {COOKIE_PATH}")
+            console.print(Panel(
+                f"[green]Created empty cookie file at [bold cyan]{COOKIE_PATH}[/]",
+                title="[bold white on green] COOKIE CREATED [/]",
+                width=65,
+                style="bold bright_white"
+            ))
             console.print("[yellow]Please add your cookies to the file and run the script again")
             return None
     except Exception as e:
-        console.print(f"[red]Error loading cookies: {str(e)}")
+        console.print(Panel(
+            f"[red]Error loading cookies: {str(e)}",
+            title="[bold white on red] ERROR [/]",
+            width=65,
+            style="bold bright_white"
+        ))
         return None
+
 
 def main():
     try:
