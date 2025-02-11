@@ -104,18 +104,22 @@ def banner():
     ))
 
 def show_main_menu():
-    print(Panel("""[1] Start Share Process
-[2] Exit""",
-        title="[bright_white]>> [Main Menu] <<",
+    console.print(Panel(
+        """[bold cyan][1] [green]Start Share Process[/]
+[bold cyan][2] [red]Exit[/]""",
+        title="[bright_white on blue]>> [Main Menu] <<",
         width=65,
         style="bold bright_white"
     ))
     
-    choice = console.input("[bright_white]Enter choice (1-2): ")
+    choice = Prompt.ask("[bright_white]Enter choice (1-2): ", choices=["1", "2"], default="1")
     
     if choice == "2":
+        console.print(Panel("[bold red]Exiting the application...[/]", style="bold bright_white", width=65))
         return False
-    return True
+    else:
+        console.print(Panel("[bold green]Starting Share Process...[/]", style="bold bright_white", width=65))
+        return True
 
 class Stats:
     def __init__(self, total_cookies):
